@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vex vs CanvasMC Benchmarks</title>
+<meta name="description" content="Vex vs CanvasMC on the same PC: 300 players standing, 300 players moving, and a big redstone farm. Tick time, lag spikes and CPU use.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vex vs CanvasMC Benchmarks">
+<meta property="og:description" content="Vex vs CanvasMC on the same PC: 300 players standing, 300 players moving, and a big redstone farm. Tick time, lag spikes and CPU use.">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --border: rgba(11, 11, 11, 0.10);
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --good: #006300;
+  --bad: #c42b2b;
+  --s-vex: #2a78d6;
+  --s-canvas: #eb6834;
+  --s-canvasac: #1baf7a;
+  --tip-bg: #0b0b0b;
+  --tip-ink: #f0efec;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --border: rgba(255, 255, 255, 0.10);
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --good: #0ca30c;
+    --bad: #f07a7a;
+    --s-vex: #3987e5;
+    --s-canvas: #d95926;
+    --s-canvasac: #199e70;
+    --tip-bg: #f0efec;
+    --tip-ink: #0b0b0b;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+a { color: var(--s-vex); }
+
+header.top { padding: 56px 0 8px; }
+.eyebrow { margin: 0 0 10px; color: var(--ink-2); font-size: 14px; }
+h1 { margin: 0; font-size: clamp(38px, 7vw, 60px); line-height: 1.05; letter-spacing: -0.02em; font-weight: 700; }
+h1 .vs { color: var(--muted); font-weight: 400; }
+.lede { max-width: 44em; margin: 16px 0 0; color: var(--ink-2); font-size: 17px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; margin: 28px 0 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 16px; }
+.tile h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.tile .k { margin: 2px 0 12px; color: var(--ink-2); font-size: 13px; }
+.tile .v { margin: 0; font-size: 46px; font-weight: 650; line-height: 1; letter-spacing: -0.02em; }
+.tile .v .u { font-size: 18px; font-weight: 500; color: var(--ink-2); margin-left: 4px; letter-spacing: 0; }
+.tile .who { margin: 8px 0 0; font-size: 13px; color: var(--ink-2); }
+.tile .cmp { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--grid); font-size: 14px; color: var(--ink-2); }
+.tile .cmp + .cmp { border-top: 0; padding-top: 0; margin-top: 4px; }
+.key { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--c); }
+.delta { font-weight: 600; white-space: nowrap; }
+.good { color: var(--good); }
+.bad { color: var(--bad); }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 12px 0; }
+.card h2 { margin: 0 0 4px; font-size: 19px; line-height: 1.3; }
+.card .sub { margin: 0 0 14px; color: var(--ink-2); font-size: 14px; }
+.card p { margin: 0 0 10px; }
+.card p:last-child { margin-bottom: 0; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 12px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; }
+
+.plot { --name-w: 8.75rem; --val-w: 4.75rem; }
+.group { padding: 8px 0 12px; }
+.group + .group { border-top: 1px solid var(--grid); }
+.g-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; margin: 0 0 8px; font-size: 14px; }
+.g-head .n { font-weight: 600; }
+.g-head .delta { font-size: 13px; }
+.bars { position: relative; display: grid; gap: 4px; }
+.gl { position: absolute; top: -3px; bottom: -3px; left: var(--name-w); right: var(--val-w); pointer-events: none; }
+.gl i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+.gl i:first-child { background: var(--axis); }
+.gl i.lim { width: 2px; margin-left: -1px; background: var(--bad); opacity: 0.85; }
+.row { position: relative; display: grid; grid-template-columns: var(--name-w) 1fr; align-items: center; height: 26px; border-radius: 6px; outline: none; cursor: default; }
+.row:focus-visible { box-shadow: 0 0 0 2px var(--s-vex); }
+.r-name { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px; }
+.r-scale { position: relative; height: 18px; margin-right: var(--val-w); }
+.r-bar { position: absolute; left: 0; top: 0; bottom: 0; min-width: 2px; border-radius: 0 4px 4px 0; background: var(--c); }
+.row:hover .r-bar, .row:focus-visible .r-bar { filter: brightness(1.12); }
+.r-val { position: absolute; top: 50%; transform: translateY(-50%); padding: 0 4px 0 6px; background: var(--surface); font-size: 13px; line-height: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.axis { position: relative; height: 20px; margin: 2px var(--val-w) 0 var(--name-w); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.axis span { position: absolute; top: 2px; transform: translateX(-50%); }
+.axis span:first-child { transform: none; }
+.axis-unit { margin: 2px 0 0 var(--name-w); font-size: 12px; color: var(--muted); }
+
+.tip { position: fixed; z-index: 10; left: 0; top: 0; pointer-events: none; background: var(--tip-bg); color: var(--tip-ink); border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); max-width: 280px; opacity: 0; transition: opacity 0.08s; }
+.tip.on { opacity: 1; }
+.tip .tv { display: block; font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tip .tm { opacity: 0.72; font-variant-numeric: tabular-nums; }
+
+.tbl { overflow-x: auto; margin: 0 -4px; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; font-variant-numeric: tabular-nums; }
+th:nth-child(-n+2), td:nth-child(-n+2) { text-align: left; }
+thead th { font-size: 12px; font-weight: 600; color: var(--ink-2); vertical-align: bottom; }
+tbody tr.first td { border-top: 1px solid var(--axis); }
+td.srv { font-weight: 600; }
+details { margin-top: 14px; font-size: 14px; }
+summary { cursor: pointer; color: var(--ink-2); }
+details table { margin-top: 10px; font-size: 13px; }
+
+.tests { display: grid; gap: 16px; }
+.test h3 { margin: 0 0 4px; font-size: 16px; }
+.test p { margin: 0 0 6px; color: var(--ink-2); }
+.facts { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.facts li { font-size: 13px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; color: var(--ink-2); }
+
+dl.setup { display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; margin: 0; font-size: 15px; }
+dl.setup dt { color: var(--ink-2); }
+dl.setup dd { margin: 0; }
+ul.fine { margin: 0; padding-left: 20px; color: var(--ink-2); }
+ul.fine li { margin: 0 0 6px; }
+
+footer { padding: 20px 0 48px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 600px) {
+  header.top { padding-top: 36px; }
+  .plot { --name-w: 6.4rem; --val-w: 4.4rem; }
+  .r-name { font-size: 12px; }
+  .card { padding: 16px; }
+  dl.setup { grid-template-columns: 1fr; gap: 2px; }
+  dl.setup dd { margin-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1>Vex <span class="vs">vs</span> CanvasMC</h1>
+    <p class="lede">Tick time, lag spikes and CPU use, measured on the same PC with the same world, the same players and the same Java settings. Lower is better everywhere on this page.</p>
+  </div>
+</header>
+<main class="wrap">
+  <section class="tiles" id="tiles" aria-label="Summary"></section>
+
+  <section class="card">
+    <h2>How to read this</h2>
+    <p><b>MSPT</b> (milliseconds per tick) is how long the server needs for one game tick. Minecraft runs 20 ticks per second, so every tick has a 50&nbsp;ms budget. The less of it a tick uses, the more players, farms and plugins the server can take before it starts to lag.</p>
+    <p id="tps-note"></p>
+  </section>
+
+  <section class="card" id="chart-mspt_mean"></section>
+  <section class="card" id="chart-mspt_p99"></section>
+  <section class="card" id="chart-cpu_cores_process"></section>
+
+  <section class="card" id="why-card">
+    <h2>Why the gap is this big</h2>
+  </section>
+
+  <section class="card">
+    <h2>All numbers</h2>
+    <p class="sub">Mean of all runs per server. Hover a bar above to see each run.</p>
+    <div class="tbl"><table id="table"></table></div>
+    <details>
+      <summary>Every run</summary>
+      <div class="tbl"><table id="runs"></table></div>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>What each test does</h2>
+    <div class="tests" id="tests"></div>
+  </section>
+
+  <section class="card">
+    <h2>Test setup</h2>
+    <dl class="setup" id="setup"></dl>
+  </section>
+
+  <section class="card">
+    <h2>Fine print</h2>
+    <ul class="fine" id="fine"></ul>
+  </section>
+</main>
+<footer>
+  <div class="wrap" id="foot"></div>
+</footer>
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<noscript><p class="wrap">This page needs JavaScript to draw its charts. The raw numbers are in <a href="data.json">data.json</a>.</p></noscript>
+<script type="application/json" id="data">{"meta": {"minecraft": "26.2", "date": "30\u201331 October 2026", "vex": "26.2 update 41", "canvas": "26.2 (2a3bf65c)"}, "servers": [{"id": "vex", "name": "Vex", "short": "Vex", "color": "--s-vex"}, {"id": "canvas", "name": "CanvasMC", "short": "CanvasMC", "color": "--s-canvas"}, {"id": "canvasac", "name": "CanvasMC + Alternate Current", "short": "CanvasMC + AC", "color": "--s-canvasac"}], "scenarios": [{"id": "idle", "name": "300 players standing", "desc": "300 bot players join through the normal login code and stand still close together near spawn. They are all in one region, the hardest case for Folia-based servers, because one region is ticked by one thread. This is the base cost of a crowd: player ticks, chunk tracking and entity tracking.", "facts": ["300 players online", "30 s warm-up, 40 s measured", "bots run inside the server"], "results": {"vex": {"runs": [{"players_expected": 300.0, "region_players_max": 300.0, "ticks": 711.0, "mspt_mean": 5.203, "mspt_p50": 5.145, "mspt_p95": 6.259, "mspt_p99": 7.033, "mspt_p999": 8.079, "mspt_max": 8.079, "ticks_over_50ms": 0.0, "tps_mean": 20.013, "tps_min": 19.985, "util_mean": 0.105, "cpu_cores_process": 0.2, "alloc_mb_s": 14.6, "heap_mean_mb": 2409.0, "gc_pauses": 0.0, "gc_pause_total_ms": 0.0}, {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 809.0, "mspt_mean": 4.955, "mspt_p50": 4.833, "mspt_p95": 6.56, "mspt_p99": 7.778, "mspt_p999": 9.087, "mspt_max": 9.087, "ticks_over_50ms": 0.0, "tps_mean": 20.004, "tps_min": 19.972, "util_mean": 0.099, "cpu_cores_process": 0.25, "alloc_mb_s": 15.0, "heap_mean_mb": 2418.0, "gc_pauses": 0.0, "gc_pause_total_ms": 0.0}], "mean": {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 760.0, "mspt_mean": 5.079000000000001, "mspt_p50": 4.989, "mspt_p95": 6.4094999999999995, "mspt_p99": 7.4055, "mspt_p999": 8.583, "mspt_max": 8.583, "ticks_over_50ms": 0.0, "tps_mean": 20.0085, "tps_min": 19.9785, "util_mean": 0.10200000000000001, "cpu_cores_process": 0.225, "alloc_mb_s": 14.8, "heap_mean_mb": 2413.5, "gc_pauses": 0.0, "gc_pause_total_ms": 0.0}}, "canvas": {"runs": [{"players_expected": 300.0, "region_players_max": 300.0, "ticks": 543.0, "mspt_mean": 75.429, "mspt_p50": 73.731, "mspt_p95": 92.866, "mspt_p99": 116.368, "mspt_p999": 238.572, "mspt_max": 238.572, "ticks_over_50ms": 536.0, "tps_mean": 13.136, "tps_min": 11.783, "util_mean": 1.0, "cpu_cores_process": 1.09, "alloc_mb_s": 162.4, "heap_mean_mb": 2790.0, "gc_pauses": 2.0, "gc_pause_total_ms": 94.0}, {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 441.0, "mspt_mean": 94.692, "mspt_p50": 92.167, "mspt_p95": 129.271, "mspt_p99": 192.576, "mspt_p999": 269.41, "mspt_max": 269.41, "ticks_over_50ms": 437.0, "tps_mean": 10.471, "tps_min": 7.858, "util_mean": 1.0, "cpu_cores_process": 1.05, "alloc_mb_s": 128.4, "heap_mean_mb": 2674.0, "gc_pauses": 2.0, "gc_pause_total_ms": 7.0}], "mean": {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 492.0, "mspt_mean": 85.06049999999999, "mspt_p50": 82.949, "mspt_p95": 111.0685, "mspt_p99": 154.47199999999998, "mspt_p999": 253.991, "mspt_max": 253.991, "ticks_over_50ms": 486.5, "tps_mean": 11.8035, "tps_min": 9.8205, "util_mean": 1.0, "cpu_cores_process": 1.07, "alloc_mb_s": 145.4, "heap_mean_mb": 2732.0, "gc_pauses": 2.0, "gc_pause_total_ms": 50.5}}}}, {"id": "walk", "name": "300 players moving", "desc": "The same 300 bots walk, sprint, jump, sneak, look around, switch items and break and place blocks in a 10\u00d710 area. They act through the same packet handlers a real client uses, so movement checks, block events and plugins see normal players.", "facts": ["300 players online", "30 s warm-up, 40 s measured", "bots run inside the server", "same random seed for the bots on both servers"], "results": {"vex": {"runs": [{"players_expected": 300.0, "region_players_max": 300.0, "ticks": 810.0, "mspt_mean": 17.153, "mspt_p50": 16.973, "mspt_p95": 20.857, "mspt_p99": 23.603, "mspt_p999": 160.414, "mspt_max": 160.414, "ticks_over_50ms": 1.0, "tps_mean": 19.939, "tps_min": 19.606, "util_mean": 0.341, "cpu_cores_process": 0.79, "alloc_mb_s": 65.7, "heap_mean_mb": 2037.0, "gc_pauses": 1.0, "gc_pause_total_ms": 135.0}, {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 808.0, "mspt_mean": 13.234, "mspt_p50": 12.784, "mspt_p95": 17.641, "mspt_p99": 20.258, "mspt_p999": 28.836, "mspt_max": 28.836, "ticks_over_50ms": 0.0, "tps_mean": 19.996, "tps_min": 19.942, "util_mean": 0.264, "cpu_cores_process": 0.57, "alloc_mb_s": 74.1, "heap_mean_mb": 2685.0, "gc_pauses": 1.0, "gc_pause_total_ms": 56.0}], "mean": {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 809.0, "mspt_mean": 15.1935, "mspt_p50": 14.878499999999999, "mspt_p95": 19.249, "mspt_p99": 21.930500000000002, "mspt_p999": 94.625, "mspt_max": 94.625, "ticks_over_50ms": 0.5, "tps_mean": 19.9675, "tps_min": 19.774, "util_mean": 0.3025, "cpu_cores_process": 0.6799999999999999, "alloc_mb_s": 69.9, "heap_mean_mb": 2361.0, "gc_pauses": 1.0, "gc_pause_total_ms": 95.5}}, "canvas": {"runs": [{"players_expected": 300.0, "region_players_max": 300.0, "ticks": 275.0, "mspt_mean": 154.997, "mspt_p50": 155.702, "mspt_p95": 175.896, "mspt_p99": 191.538, "mspt_p999": 208.716, "mspt_max": 208.716, "ticks_over_50ms": 272.0, "tps_mean": 6.347, "tps_min": 6.177, "util_mean": 1.0, "cpu_cores_process": 1.12, "alloc_mb_s": 211.1, "heap_mean_mb": 2151.0, "gc_pauses": 3.0, "gc_pause_total_ms": 32.0}, {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 290.0, "mspt_mean": 145.259, "mspt_p50": 144.274, "mspt_p95": 183.687, "mspt_p99": 199.913, "mspt_p999": 243.971, "mspt_max": 243.971, "ticks_over_50ms": 287.0, "tps_mean": 6.793, "tps_min": 6.023, "util_mean": 1.0, "cpu_cores_process": 1.1, "alloc_mb_s": 162.2, "heap_mean_mb": 2504.0, "gc_pauses": 2.0, "gc_pause_total_ms": 24.0}], "mean": {"players_expected": 300.0, "region_players_max": 300.0, "ticks": 282.5, "mspt_mean": 150.128, "mspt_p50": 149.988, "mspt_p95": 179.79149999999998, "mspt_p99": 195.7255, "mspt_p999": 226.3435, "mspt_max": 226.3435, "ticks_over_50ms": 279.5, "tps_mean": 6.57, "tps_min": 6.1, "util_mean": 1.0, "cpu_cores_process": 1.11, "alloc_mb_s": 186.64999999999998, "heap_mean_mb": 2327.5, "gc_pauses": 2.5, "gc_pause_total_ms": 28.0}}}}, {"id": "farm", "name": "Redstone farm + 30 players", "desc": "30 bot clients connect over the network and walk around spawn, next to a redstone build that runs the whole time: 256 redstone clocks (observer clocks driving lamps and pistons, comparator clocks and repeater loops), 1,024 pistons that push out and pull back every 8 ticks, 512 hoppers passing items around in loops and 512 empty hoppers waiting for items, like the collectors under a farm.", "facts": ["30 players online", "25 s warm-up, 60 s measured", "real network clients", "256 clocks, 1,024 pistons, 1,024 hoppers", "piston pushes per second (fewer when TPS drops): Vex 1,623, CanvasMC 1,434, CanvasMC + AC 1,624"], "results": {"vex": {"runs": [{"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1221.0, "mspt_mean": 10.576, "mspt_p50": 9.637, "mspt_p95": 17.479, "mspt_p99": 21.373, "mspt_p999": 24.056, "mspt_max": 29.542, "ticks_over_50ms": 0.0, "tps_mean": 19.989, "tps_min": 19.956, "util_mean": 0.184, "cpu_cores_process": 0.76, "alloc_mb_s": 74.8, "heap_mean_mb": 2034.0, "gc_pauses": 2.0, "gc_pause_total_ms": 64.0, "redstone_switches_s": 11412.7, "piston_pushes_s": 1622.4}, {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1209.0, "mspt_mean": 9.4, "mspt_p50": 8.446, "mspt_p95": 14.932, "mspt_p99": 18.084, "mspt_p999": 22.464, "mspt_max": 29.939, "ticks_over_50ms": 0.0, "tps_mean": 20.005, "tps_min": 19.937, "util_mean": 0.162, "cpu_cores_process": 0.63, "alloc_mb_s": 74.4, "heap_mean_mb": 2000.0, "gc_pauses": 2.0, "gc_pause_total_ms": 61.0, "redstone_switches_s": 11429.7, "piston_pushes_s": 1624.0}], "mean": {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1215.0, "mspt_mean": 9.988, "mspt_p50": 9.0415, "mspt_p95": 16.2055, "mspt_p99": 19.7285, "mspt_p999": 23.259999999999998, "mspt_max": 29.7405, "ticks_over_50ms": 0.0, "tps_mean": 19.997, "tps_min": 19.9465, "util_mean": 0.173, "cpu_cores_process": 0.6950000000000001, "alloc_mb_s": 74.6, "heap_mean_mb": 2017.0, "gc_pauses": 2.0, "gc_pause_total_ms": 62.5, "redstone_switches_s": 11421.2, "piston_pushes_s": 1623.2}}, "canvas": {"runs": [{"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1048.0, "mspt_mean": 39.907, "mspt_p50": 17.202, "mspt_p95": 115.99, "mspt_p99": 125.76, "mspt_p999": 143.372, "mspt_max": 147.426, "ticks_over_50ms": 339.0, "tps_mean": 17.107, "tps_min": 16.868, "util_mean": 0.683, "cpu_cores_process": 1.53, "alloc_mb_s": 567.3, "heap_mean_mb": 2082.0, "gc_pauses": 11.0, "gc_pause_total_ms": 24.0, "redstone_switches_s": 27028.2, "piston_pushes_s": 1381.3}, {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1135.0, "mspt_mean": 36.504, "mspt_p50": 21.807, "mspt_p95": 95.772, "mspt_p99": 108.217, "mspt_p999": 128.992, "mspt_max": 134.072, "ticks_over_50ms": 301.0, "tps_mean": 18.458, "tps_min": 17.865, "util_mean": 0.676, "cpu_cores_process": 1.49, "alloc_mb_s": 611.7, "heap_mean_mb": 1696.0, "gc_pauses": 12.0, "gc_pause_total_ms": 21.0, "redstone_switches_s": 28999.8, "piston_pushes_s": 1487.7}], "mean": {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1091.5, "mspt_mean": 38.2055, "mspt_p50": 19.5045, "mspt_p95": 105.881, "mspt_p99": 116.9885, "mspt_p999": 136.18200000000002, "mspt_max": 140.749, "ticks_over_50ms": 320.0, "tps_mean": 17.7825, "tps_min": 17.3665, "util_mean": 0.6795, "cpu_cores_process": 1.51, "alloc_mb_s": 589.5, "heap_mean_mb": 1889.0, "gc_pauses": 11.5, "gc_pause_total_ms": 22.5, "redstone_switches_s": 28014.0, "piston_pushes_s": 1434.5}}, "canvasac": {"runs": [{"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1221.0, "mspt_mean": 15.638, "mspt_p50": 13.059, "mspt_p95": 27.402, "mspt_p99": 29.613, "mspt_p999": 44.042, "mspt_max": 48.486, "ticks_over_50ms": 0.0, "tps_mean": 19.991, "tps_min": 19.959, "util_mean": 0.316, "cpu_cores_process": 1.24, "alloc_mb_s": 121.4, "heap_mean_mb": 1942.0, "gc_pauses": 2.0, "gc_pause_total_ms": 22.0, "redstone_switches_s": 11412.7, "piston_pushes_s": 1624.5}, {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1212.0, "mspt_mean": 12.765, "mspt_p50": 10.978, "mspt_p95": 20.657, "mspt_p99": 22.424, "mspt_p999": 24.959, "mspt_max": 31.502, "ticks_over_50ms": 0.0, "tps_mean": 20.0, "tps_min": 19.997, "util_mean": 0.255, "cpu_cores_process": 1.07, "alloc_mb_s": 122.0, "heap_mean_mb": 2047.0, "gc_pauses": 2.0, "gc_pause_total_ms": 18.0, "redstone_switches_s": 11429.7, "piston_pushes_s": 1624.0}], "mean": {"players_expected": 30.0, "region_players_max": 30.0, "ticks": 1216.5, "mspt_mean": 14.2015, "mspt_p50": 12.0185, "mspt_p95": 24.0295, "mspt_p99": 26.0185, "mspt_p999": 34.5005, "mspt_max": 39.994, "ticks_over_50ms": 0.0, "tps_mean": 19.9955, "tps_min": 19.978, "util_mean": 0.2855, "cpu_cores_process": 1.155, "alloc_mb_s": 121.7, "heap_mean_mb": 1994.5, "gc_pauses": 2.0, "gc_pause_total_ms": 20.0, "redstone_switches_s": 11421.2, "piston_pushes_s": 1624.25}}}}], "why": ["We profiled CanvasMC with Java Flight Recorder during both 300-player tests. About half of its tick time with 300 standing players, and two thirds with 300 moving players, went to the locator bar: the server keeps every player's marker (waypoint) up to date for every other player. With everyone in one place, that work grows with the square of the player count.", "Vex reworked how these updates and the entity tracker run, so it does the same job with much less work per tick. In the redstone test, part of the difference is the redstone engine (see the CanvasMC + Alternate Current run); Vex is still faster than CanvasMC with the same engine."], "setup": [["PC", "AMD Ryzen 7 5700X (8 cores, 16 threads), 32 GB DDR4, Windows 11 Pro"], ["Java", "Oracle Java 25.0.3 with the G1 garbage collector and the same flags for both servers: a 6 GB heap in the 300-player tests, an 8 GB heap with Aikar's flags in the redstone test"], ["Vex", "Vex 26.2 update 41 (29 October 2026)"], ["CanvasMC", "the last Minecraft 26.2 build of CanvasMC (commit 2a3bf65c, 29 September 2026), built from the official source"], ["World", "the same pre-generated flat world for every run, view distance 10, simulation distance 10"], ["Settings", "each server's own default config, with netty threads set to 8 on both. For the redstone test, Vex's redstone clock limiter was turned off: it slows clocks down on purpose, and both servers should run exactly the same redstone"], ["Runs", "every test ran twice per server with the servers taking turns; the page shows the average of both runs"], ["Measuring", "MSPT and TPS come from Folia's own per-region tick timings (what /tps shows), read by a small measuring plugin (the same jar on both servers) once all players are online and the warm-up is over"]], "fine": ["Measured on a desktop PC, not on a dedicated server. Your own numbers will be different; what matters on this page is the gap between the two servers on the same machine.", "In the two 300-player tests the players are bots that run inside the server without a network connection, so sending packets over the network is not part of those numbers. The redstone test uses bot clients that connect over the network like a real game client.", "Vex uses Alternate Current redstone by default (a faster redstone engine that Paper ships as an option); stock CanvasMC uses vanilla redstone by default. The extra \u201cCanvasMC + Alternate Current\u201d run shows CanvasMC with that same setting turned on.", "Both servers ran with their default settings. Tuning can improve either one; these are the numbers you get out of the box.", "Both servers ran every test with only the bench plugins installed. A real server with many plugins spends extra time in those plugins on either software."]}</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("data").textContent);
+  var SERVERS = DATA.servers, SCEN = DATA.scenarios;
+  var SERVER = {};
+  SERVERS.forEach(function (s) { SERVER[s.id] = s; });
+
+  var METRICS = {
+    mspt_mean: { title: "Average tick time", sub: "MSPT, average over the whole measurement. Lower is better.", unit: "ms", d: 1, td: 2, noun: "tick time" },
+    mspt_p99: { title: "Lag spikes: the slowest 1% of ticks", sub: "99th percentile MSPT: 99% of ticks were faster than this. Lower is better.", unit: "ms", d: 1, td: 2, noun: "spike time" },
+    cpu_cores_process: { title: "CPU used", sub: "Average number of CPU cores the whole server process kept busy (all threads, including garbage collection). Lower is better. In the two 300-player tests CanvasMC's tick thread was busy all the time and still fell behind, so its CPU use there is a floor, not what it would need to keep up.", unit: "cores", d: 2, td: 2, noun: "CPU" }
+  };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function fmt(v, d) { return v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function withUnit(v, m, d) { return fmt(v, d == null ? m.d : d) + (m.unit === "ms" ? " ms" : " " + m.unit); }
+  function pct(v, base) { return (v - base) / base * 100; }
+  function deltaNode(v, base, noun, suffix) {
+    var p = pct(v, base), r = Math.round(Math.abs(p));
+    var s = el("span", "delta");
+    if (r === 0) { s.textContent = "about the same " + noun + (suffix || ""); return s; }
+    s.className += p < 0 ? " good" : " bad";
+    var times = p < 0 && base / v >= 2 ? " (" + fmt(base / v, 1) + "× lower)" : "";
+    s.textContent = (p < 0 ? "▼ " + r + "% less " : "▲ " + r + "% more ") + noun + (suffix || "") + times;
+    return s;
+  }
+  function tps(v) { return fmt(Math.min(v, 20), 1) + " TPS"; }
+  function niceTicks(max) {
+    var raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p;
+    var step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+    var top = Math.ceil(max / step - 1e-9) * step, t = [];
+    for (var i = 0; i * step <= top + 1e-9; i++) t.push(+(i * step).toFixed(6));
+    return t;
+  }
+  function servedIn(sc) { return SERVERS.filter(function (s) { return sc.results[s.id]; }); }
+  function swatch(id) { var k = el("span", "key"); k.style.setProperty("--c", "var(" + SERVER[id].color + ")"); return k; }
+
+  document.getElementById("eyebrow").textContent = "Benchmarks · Minecraft " + DATA.meta.minecraft + " · measured " + DATA.meta.date;
+
+  // Summary tiles: Vex's average tick time per test against CanvasMC.
+  var tiles = document.getElementById("tiles");
+  SCEN.forEach(function (sc) {
+    var vex = sc.results.vex.mean, m = METRICS.mspt_mean;
+    var t = el("article", "tile");
+    t.appendChild(el("h3", null, sc.name));
+    t.appendChild(el("p", "k", "Average tick time on Vex"));
+    var v = el("p", "v", fmt(vex.mspt_mean, 1));
+    v.appendChild(el("span", "u", "ms"));
+    t.appendChild(v);
+    t.appendChild(el("p", "who", tps(vex.tps_mean) + " · " + fmt(vex.cpu_cores_process, 2) + " CPU cores"));
+    servedIn(sc).forEach(function (s) {
+      if (s.id === "vex") return;
+      var other = sc.results[s.id].mean;
+      var c = el("p", "cmp");
+      c.appendChild(swatch(s.id));
+      c.appendChild(document.createTextNode(s.name + ": " + withUnit(other.mspt_mean, m) + ", " + tps(other.tps_mean)));
+      c.appendChild(el("br"));
+      c.appendChild(deltaNode(vex.mspt_mean, other.mspt_mean, "tick time with Vex"));
+      t.appendChild(c);
+    });
+    tiles.appendChild(t);
+  });
+
+  // TPS sentence, from the data.
+  var below = {}, belowServers = [], restMin = 20;
+  SCEN.forEach(function (sc) {
+    servedIn(sc).forEach(function (s) {
+      var t = sc.results[s.id].mean.tps_mean;
+      if (t < 19.5) {
+        if (!below[s.name]) { below[s.name] = []; belowServers.push(s.name); }
+        below[s.name].push(sc.name.toLowerCase() + " (" + tps(t) + ")");
+      } else restMin = Math.min(restMin, t);
+    });
+  });
+  function list(items) { return items.length < 2 ? items.join("") : items.slice(0, -1).join(", ") + " and " + items[items.length - 1]; }
+  var restText = fmt(Math.min(restMin, 20), 1) === "20.0" ? "20 TPS" : tps(restMin) + " or higher";
+  document.getElementById("tps-note").textContent = belowServers.length === 0
+    ? "Both servers stayed at 20 TPS in every test, so TPS alone can't tell them apart here. The charts show how much of each tick's budget was used: that is the headroom you keep for a busier day."
+    : "When ticks take longer than 50 ms the server can't keep up and TPS drops below 20, which players feel as lag. That happened to "
+      + list(belowServers.map(function (n) { return n + " with " + list(below[n]); })) + ". Every other result stayed at " + restText + ".";
+
+  // Tooltip
+  var tip = document.getElementById("tip");
+  function showTip(node, x, y) {
+    tip.textContent = "";
+    tip.appendChild(el("span", "tv", node.dataset.v));
+    tip.appendChild(el("span", null, node.dataset.s));
+    tip.appendChild(el("br"));
+    tip.appendChild(el("span", "tm", node.dataset.r));
+    tip.classList.add("on");
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = Math.min(Math.max(8, x + 14), window.innerWidth - w - 8);
+    var top = y - h - 12 < 8 ? y + 18 : y - h - 12;
+    tip.style.transform = "translate(" + left + "px," + top + "px)";
+  }
+  function hideTip() { tip.classList.remove("on"); }
+
+  // Bar charts: one per metric, every test on one shared axis.
+  Object.keys(METRICS).forEach(function (key) {
+    var m = METRICS[key], host = document.getElementById("chart-" + key);
+    host.appendChild(el("h2", null, m.title));
+    host.appendChild(el("p", "sub", m.sub));
+    var lg = el("div", "legend");
+    SERVERS.forEach(function (s) { var i = el("span"); i.appendChild(swatch(s.id)); i.appendChild(document.createTextNode(s.name)); lg.appendChild(i); });
+    host.appendChild(lg);
+    var max = 0;
+    SCEN.forEach(function (sc) { servedIn(sc).forEach(function (s) { max = Math.max(max, sc.results[s.id].mean[key]); }); });
+    var ticks = niceTicks(max), top = ticks[ticks.length - 1];
+    var plot = el("div", "plot");
+    SCEN.forEach(function (sc) {
+      var g = el("div", "group"), head = el("div", "g-head");
+      head.appendChild(el("span", "n", sc.name));
+      if (sc.results.canvas) head.appendChild(deltaNode(sc.results.vex.mean[key], sc.results.canvas.mean[key], m.noun, " than CanvasMC"));
+      g.appendChild(head);
+      var bars = el("div", "bars"), gl = el("div", "gl");
+      ticks.forEach(function (t) { var i = el("i"); i.style.left = (t / top * 100) + "%"; gl.appendChild(i); });
+      if (m.unit === "ms" && top >= 50) { var lim = el("i", "lim"); lim.style.left = (50 / top * 100) + "%"; gl.appendChild(lim); }
+      bars.appendChild(gl);
+      servedIn(sc).forEach(function (s) {
+        var r = sc.results[s.id], val = r.mean[key];
+        var row = el("div", "row");
+        row.tabIndex = 0;
+        row.dataset.v = withUnit(val, m, m.td);
+        row.dataset.s = s.name + " · " + sc.name;
+        row.dataset.r = r.runs.map(function (run, i) { return "Run " + (i + 1) + ": " + fmt(run[key], m.td); }).join("  ·  ");
+        row.setAttribute("aria-label", s.name + ", " + sc.name + ": " + withUnit(val, m, m.td));
+        row.appendChild(el("span", "r-name", s.short));
+        var scale = el("span", "r-scale"), bar = el("span", "r-bar"), lab = el("span", "r-val", withUnit(val, m));
+        bar.style.setProperty("--c", "var(" + s.color + ")");
+        bar.style.width = (val / top * 100) + "%";
+        lab.style.left = (val / top * 100) + "%";
+        scale.appendChild(bar);
+        scale.appendChild(lab);
+        row.appendChild(scale);
+        row.addEventListener("pointermove", function (e) { showTip(row, e.clientX, e.clientY); });
+        row.addEventListener("pointerleave", hideTip);
+        row.addEventListener("focus", function () { var b = row.getBoundingClientRect(); showTip(row, b.left + b.width / 2, b.top); });
+        row.addEventListener("blur", hideTip);
+        bars.appendChild(row);
+      });
+      g.appendChild(bars);
+      plot.appendChild(g);
+    });
+    var axis = el("div", "axis");
+    ticks.forEach(function (t) { var s = el("span", null, fmt(t, t % 1 ? 1 : 0)); s.style.left = (t / top * 100) + "%"; axis.appendChild(s); });
+    plot.appendChild(axis);
+    plot.appendChild(el("p", "axis-unit", m.unit === "ms"
+      ? "milliseconds per tick" + (top >= 50 ? " · red line: 50 ms, above it the server drops below 20 TPS" : "")
+      : "CPU cores"));
+    host.appendChild(plot);
+  });
+  window.addEventListener("scroll", hideTip, { passive: true });
+
+  // Tables
+  var COLS = [
+    ["mspt_mean", "Avg MSPT", 2], ["mspt_p50", "Median MSPT", 2], ["mspt_p99", "p99 MSPT", 2], ["mspt_max", "Max MSPT", 1],
+    ["tps_mean", "Avg TPS", 2], ["tps_min", "Lowest TPS", 2], ["cpu_cores_process", "CPU cores", 2], ["alloc_mb_s", "Alloc MB/s", 0], ["gc_pauses", "GC pauses", 1]
+  ];
+  function header(table, first) {
+    var tr = el("tr");
+    [first, "Server"].concat(COLS.map(function (c) { return c[1]; })).forEach(function (h) { tr.appendChild(el("th", null, h)); });
+    var th = el("thead"); th.appendChild(tr); table.appendChild(th);
+  }
+  var table = document.getElementById("table"), runs = document.getElementById("runs");
+  header(table, "Test");
+  header(runs, "Test / run");
+  var tb = el("tbody"), rb = el("tbody");
+  SCEN.forEach(function (sc) {
+    servedIn(sc).forEach(function (s, i) {
+      var r = sc.results[s.id], tr = el("tr", i === 0 ? "first" : null);
+      tr.appendChild(el("td", null, i === 0 ? sc.name : ""));
+      tr.appendChild(el("td", "srv", s.name));
+      COLS.forEach(function (c) { tr.appendChild(el("td", null, fmt(r.mean[c[0]], c[2]))); });
+      tb.appendChild(tr);
+      r.runs.forEach(function (run, j) {
+        var rr = el("tr", i === 0 && j === 0 ? "first" : null);
+        rr.appendChild(el("td", null, sc.name + " · " + (j + 1)));
+        rr.appendChild(el("td", "srv", s.name));
+        COLS.forEach(function (c) { rr.appendChild(el("td", null, fmt(run[c[0]], c[2] === 1 ? 0 : c[2]))); });
+        rb.appendChild(rr);
+      });
+    });
+  });
+  table.appendChild(tb);
+  runs.appendChild(rb);
+
+  // Test descriptions
+  var tests = document.getElementById("tests");
+  SCEN.forEach(function (sc) {
+    var t = el("div", "test");
+    t.appendChild(el("h3", null, sc.name));
+    t.appendChild(el("p", null, sc.desc));
+    var ul = el("ul", "facts");
+    sc.facts.forEach(function (f) { ul.appendChild(el("li", null, f)); });
+    t.appendChild(ul);
+    tests.appendChild(t);
+  });
+
+  // Profiling notes
+  var why = document.getElementById("why-card");
+  if (DATA.why && DATA.why.length) DATA.why.forEach(function (p) { why.appendChild(el("p", null, p)); });
+  else why.hidden = true;
+
+  // Setup and fine print
+  var setup = document.getElementById("setup");
+  DATA.setup.forEach(function (row) { setup.appendChild(el("dt", null, row[0])); setup.appendChild(el("dd", null, row[1])); });
+  var fine = document.getElementById("fine");
+  DATA.fine.forEach(function (line) { fine.appendChild(el("li", null, line)); });
+  var foot = document.getElementById("foot");
+  foot.appendChild(document.createTextNode("Measured " + DATA.meta.date + ". Raw numbers: "));
+  var a = el("a", null, "data.json"); a.href = "data.json"; foot.appendChild(a);
+  foot.appendChild(document.createTextNode("."));
+})();
+</script>
+</body>
+</html>

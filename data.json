@@ -1,0 +1,580 @@
+{
+ "meta": {
+  "minecraft": "26.2",
+  "date": "30\u201331 October 2026",
+  "vex": "26.2 update 41",
+  "canvas": "26.2 (2a3bf65c)"
+ },
+ "servers": [
+  {
+   "id": "vex",
+   "name": "Vex",
+   "short": "Vex",
+   "color": "--s-vex"
+  },
+  {
+   "id": "canvas",
+   "name": "CanvasMC",
+   "short": "CanvasMC",
+   "color": "--s-canvas"
+  },
+  {
+   "id": "canvasac",
+   "name": "CanvasMC + Alternate Current",
+   "short": "CanvasMC + AC",
+   "color": "--s-canvasac"
+  }
+ ],
+ "scenarios": [
+  {
+   "id": "idle",
+   "name": "300 players standing",
+   "desc": "300 bot players join through the normal login code and stand still close together near spawn. They are all in one region, the hardest case for Folia-based servers, because one region is ticked by one thread. This is the base cost of a crowd: player ticks, chunk tracking and entity tracking.",
+   "facts": [
+    "300 players online",
+    "30 s warm-up, 40 s measured",
+    "bots run inside the server"
+   ],
+   "results": {
+    "vex": {
+     "runs": [
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 711.0,
+       "mspt_mean": 5.203,
+       "mspt_p50": 5.145,
+       "mspt_p95": 6.259,
+       "mspt_p99": 7.033,
+       "mspt_p999": 8.079,
+       "mspt_max": 8.079,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 20.013,
+       "tps_min": 19.985,
+       "util_mean": 0.105,
+       "cpu_cores_process": 0.2,
+       "alloc_mb_s": 14.6,
+       "heap_mean_mb": 2409.0,
+       "gc_pauses": 0.0,
+       "gc_pause_total_ms": 0.0
+      },
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 809.0,
+       "mspt_mean": 4.955,
+       "mspt_p50": 4.833,
+       "mspt_p95": 6.56,
+       "mspt_p99": 7.778,
+       "mspt_p999": 9.087,
+       "mspt_max": 9.087,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 20.004,
+       "tps_min": 19.972,
+       "util_mean": 0.099,
+       "cpu_cores_process": 0.25,
+       "alloc_mb_s": 15.0,
+       "heap_mean_mb": 2418.0,
+       "gc_pauses": 0.0,
+       "gc_pause_total_ms": 0.0
+      }
+     ],
+     "mean": {
+      "players_expected": 300.0,
+      "region_players_max": 300.0,
+      "ticks": 760.0,
+      "mspt_mean": 5.079000000000001,
+      "mspt_p50": 4.989,
+      "mspt_p95": 6.4094999999999995,
+      "mspt_p99": 7.4055,
+      "mspt_p999": 8.583,
+      "mspt_max": 8.583,
+      "ticks_over_50ms": 0.0,
+      "tps_mean": 20.0085,
+      "tps_min": 19.9785,
+      "util_mean": 0.10200000000000001,
+      "cpu_cores_process": 0.225,
+      "alloc_mb_s": 14.8,
+      "heap_mean_mb": 2413.5,
+      "gc_pauses": 0.0,
+      "gc_pause_total_ms": 0.0
+     }
+    },
+    "canvas": {
+     "runs": [
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 543.0,
+       "mspt_mean": 75.429,
+       "mspt_p50": 73.731,
+       "mspt_p95": 92.866,
+       "mspt_p99": 116.368,
+       "mspt_p999": 238.572,
+       "mspt_max": 238.572,
+       "ticks_over_50ms": 536.0,
+       "tps_mean": 13.136,
+       "tps_min": 11.783,
+       "util_mean": 1.0,
+       "cpu_cores_process": 1.09,
+       "alloc_mb_s": 162.4,
+       "heap_mean_mb": 2790.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 94.0
+      },
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 441.0,
+       "mspt_mean": 94.692,
+       "mspt_p50": 92.167,
+       "mspt_p95": 129.271,
+       "mspt_p99": 192.576,
+       "mspt_p999": 269.41,
+       "mspt_max": 269.41,
+       "ticks_over_50ms": 437.0,
+       "tps_mean": 10.471,
+       "tps_min": 7.858,
+       "util_mean": 1.0,
+       "cpu_cores_process": 1.05,
+       "alloc_mb_s": 128.4,
+       "heap_mean_mb": 2674.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 7.0
+      }
+     ],
+     "mean": {
+      "players_expected": 300.0,
+      "region_players_max": 300.0,
+      "ticks": 492.0,
+      "mspt_mean": 85.06049999999999,
+      "mspt_p50": 82.949,
+      "mspt_p95": 111.0685,
+      "mspt_p99": 154.47199999999998,
+      "mspt_p999": 253.991,
+      "mspt_max": 253.991,
+      "ticks_over_50ms": 486.5,
+      "tps_mean": 11.8035,
+      "tps_min": 9.8205,
+      "util_mean": 1.0,
+      "cpu_cores_process": 1.07,
+      "alloc_mb_s": 145.4,
+      "heap_mean_mb": 2732.0,
+      "gc_pauses": 2.0,
+      "gc_pause_total_ms": 50.5
+     }
+    }
+   }
+  },
+  {
+   "id": "walk",
+   "name": "300 players moving",
+   "desc": "The same 300 bots walk, sprint, jump, sneak, look around, switch items and break and place blocks in a 10\u00d710 area. They act through the same packet handlers a real client uses, so movement checks, block events and plugins see normal players.",
+   "facts": [
+    "300 players online",
+    "30 s warm-up, 40 s measured",
+    "bots run inside the server",
+    "same random seed for the bots on both servers"
+   ],
+   "results": {
+    "vex": {
+     "runs": [
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 810.0,
+       "mspt_mean": 17.153,
+       "mspt_p50": 16.973,
+       "mspt_p95": 20.857,
+       "mspt_p99": 23.603,
+       "mspt_p999": 160.414,
+       "mspt_max": 160.414,
+       "ticks_over_50ms": 1.0,
+       "tps_mean": 19.939,
+       "tps_min": 19.606,
+       "util_mean": 0.341,
+       "cpu_cores_process": 0.79,
+       "alloc_mb_s": 65.7,
+       "heap_mean_mb": 2037.0,
+       "gc_pauses": 1.0,
+       "gc_pause_total_ms": 135.0
+      },
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 808.0,
+       "mspt_mean": 13.234,
+       "mspt_p50": 12.784,
+       "mspt_p95": 17.641,
+       "mspt_p99": 20.258,
+       "mspt_p999": 28.836,
+       "mspt_max": 28.836,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 19.996,
+       "tps_min": 19.942,
+       "util_mean": 0.264,
+       "cpu_cores_process": 0.57,
+       "alloc_mb_s": 74.1,
+       "heap_mean_mb": 2685.0,
+       "gc_pauses": 1.0,
+       "gc_pause_total_ms": 56.0
+      }
+     ],
+     "mean": {
+      "players_expected": 300.0,
+      "region_players_max": 300.0,
+      "ticks": 809.0,
+      "mspt_mean": 15.1935,
+      "mspt_p50": 14.878499999999999,
+      "mspt_p95": 19.249,
+      "mspt_p99": 21.930500000000002,
+      "mspt_p999": 94.625,
+      "mspt_max": 94.625,
+      "ticks_over_50ms": 0.5,
+      "tps_mean": 19.9675,
+      "tps_min": 19.774,
+      "util_mean": 0.3025,
+      "cpu_cores_process": 0.6799999999999999,
+      "alloc_mb_s": 69.9,
+      "heap_mean_mb": 2361.0,
+      "gc_pauses": 1.0,
+      "gc_pause_total_ms": 95.5
+     }
+    },
+    "canvas": {
+     "runs": [
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 275.0,
+       "mspt_mean": 154.997,
+       "mspt_p50": 155.702,
+       "mspt_p95": 175.896,
+       "mspt_p99": 191.538,
+       "mspt_p999": 208.716,
+       "mspt_max": 208.716,
+       "ticks_over_50ms": 272.0,
+       "tps_mean": 6.347,
+       "tps_min": 6.177,
+       "util_mean": 1.0,
+       "cpu_cores_process": 1.12,
+       "alloc_mb_s": 211.1,
+       "heap_mean_mb": 2151.0,
+       "gc_pauses": 3.0,
+       "gc_pause_total_ms": 32.0
+      },
+      {
+       "players_expected": 300.0,
+       "region_players_max": 300.0,
+       "ticks": 290.0,
+       "mspt_mean": 145.259,
+       "mspt_p50": 144.274,
+       "mspt_p95": 183.687,
+       "mspt_p99": 199.913,
+       "mspt_p999": 243.971,
+       "mspt_max": 243.971,
+       "ticks_over_50ms": 287.0,
+       "tps_mean": 6.793,
+       "tps_min": 6.023,
+       "util_mean": 1.0,
+       "cpu_cores_process": 1.1,
+       "alloc_mb_s": 162.2,
+       "heap_mean_mb": 2504.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 24.0
+      }
+     ],
+     "mean": {
+      "players_expected": 300.0,
+      "region_players_max": 300.0,
+      "ticks": 282.5,
+      "mspt_mean": 150.128,
+      "mspt_p50": 149.988,
+      "mspt_p95": 179.79149999999998,
+      "mspt_p99": 195.7255,
+      "mspt_p999": 226.3435,
+      "mspt_max": 226.3435,
+      "ticks_over_50ms": 279.5,
+      "tps_mean": 6.57,
+      "tps_min": 6.1,
+      "util_mean": 1.0,
+      "cpu_cores_process": 1.11,
+      "alloc_mb_s": 186.64999999999998,
+      "heap_mean_mb": 2327.5,
+      "gc_pauses": 2.5,
+      "gc_pause_total_ms": 28.0
+     }
+    }
+   }
+  },
+  {
+   "id": "farm",
+   "name": "Redstone farm + 30 players",
+   "desc": "30 bot clients connect over the network and walk around spawn, next to a redstone build that runs the whole time: 256 redstone clocks (observer clocks driving lamps and pistons, comparator clocks and repeater loops), 1,024 pistons that push out and pull back every 8 ticks, 512 hoppers passing items around in loops and 512 empty hoppers waiting for items, like the collectors under a farm.",
+   "facts": [
+    "30 players online",
+    "25 s warm-up, 60 s measured",
+    "real network clients",
+    "256 clocks, 1,024 pistons, 1,024 hoppers",
+    "piston pushes per second (fewer when TPS drops): Vex 1,623, CanvasMC 1,434, CanvasMC + AC 1,624"
+   ],
+   "results": {
+    "vex": {
+     "runs": [
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1221.0,
+       "mspt_mean": 10.576,
+       "mspt_p50": 9.637,
+       "mspt_p95": 17.479,
+       "mspt_p99": 21.373,
+       "mspt_p999": 24.056,
+       "mspt_max": 29.542,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 19.989,
+       "tps_min": 19.956,
+       "util_mean": 0.184,
+       "cpu_cores_process": 0.76,
+       "alloc_mb_s": 74.8,
+       "heap_mean_mb": 2034.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 64.0,
+       "redstone_switches_s": 11412.7,
+       "piston_pushes_s": 1622.4
+      },
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1209.0,
+       "mspt_mean": 9.4,
+       "mspt_p50": 8.446,
+       "mspt_p95": 14.932,
+       "mspt_p99": 18.084,
+       "mspt_p999": 22.464,
+       "mspt_max": 29.939,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 20.005,
+       "tps_min": 19.937,
+       "util_mean": 0.162,
+       "cpu_cores_process": 0.63,
+       "alloc_mb_s": 74.4,
+       "heap_mean_mb": 2000.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 61.0,
+       "redstone_switches_s": 11429.7,
+       "piston_pushes_s": 1624.0
+      }
+     ],
+     "mean": {
+      "players_expected": 30.0,
+      "region_players_max": 30.0,
+      "ticks": 1215.0,
+      "mspt_mean": 9.988,
+      "mspt_p50": 9.0415,
+      "mspt_p95": 16.2055,
+      "mspt_p99": 19.7285,
+      "mspt_p999": 23.259999999999998,
+      "mspt_max": 29.7405,
+      "ticks_over_50ms": 0.0,
+      "tps_mean": 19.997,
+      "tps_min": 19.9465,
+      "util_mean": 0.173,
+      "cpu_cores_process": 0.6950000000000001,
+      "alloc_mb_s": 74.6,
+      "heap_mean_mb": 2017.0,
+      "gc_pauses": 2.0,
+      "gc_pause_total_ms": 62.5,
+      "redstone_switches_s": 11421.2,
+      "piston_pushes_s": 1623.2
+     }
+    },
+    "canvas": {
+     "runs": [
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1048.0,
+       "mspt_mean": 39.907,
+       "mspt_p50": 17.202,
+       "mspt_p95": 115.99,
+       "mspt_p99": 125.76,
+       "mspt_p999": 143.372,
+       "mspt_max": 147.426,
+       "ticks_over_50ms": 339.0,
+       "tps_mean": 17.107,
+       "tps_min": 16.868,
+       "util_mean": 0.683,
+       "cpu_cores_process": 1.53,
+       "alloc_mb_s": 567.3,
+       "heap_mean_mb": 2082.0,
+       "gc_pauses": 11.0,
+       "gc_pause_total_ms": 24.0,
+       "redstone_switches_s": 27028.2,
+       "piston_pushes_s": 1381.3
+      },
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1135.0,
+       "mspt_mean": 36.504,
+       "mspt_p50": 21.807,
+       "mspt_p95": 95.772,
+       "mspt_p99": 108.217,
+       "mspt_p999": 128.992,
+       "mspt_max": 134.072,
+       "ticks_over_50ms": 301.0,
+       "tps_mean": 18.458,
+       "tps_min": 17.865,
+       "util_mean": 0.676,
+       "cpu_cores_process": 1.49,
+       "alloc_mb_s": 611.7,
+       "heap_mean_mb": 1696.0,
+       "gc_pauses": 12.0,
+       "gc_pause_total_ms": 21.0,
+       "redstone_switches_s": 28999.8,
+       "piston_pushes_s": 1487.7
+      }
+     ],
+     "mean": {
+      "players_expected": 30.0,
+      "region_players_max": 30.0,
+      "ticks": 1091.5,
+      "mspt_mean": 38.2055,
+      "mspt_p50": 19.5045,
+      "mspt_p95": 105.881,
+      "mspt_p99": 116.9885,
+      "mspt_p999": 136.18200000000002,
+      "mspt_max": 140.749,
+      "ticks_over_50ms": 320.0,
+      "tps_mean": 17.7825,
+      "tps_min": 17.3665,
+      "util_mean": 0.6795,
+      "cpu_cores_process": 1.51,
+      "alloc_mb_s": 589.5,
+      "heap_mean_mb": 1889.0,
+      "gc_pauses": 11.5,
+      "gc_pause_total_ms": 22.5,
+      "redstone_switches_s": 28014.0,
+      "piston_pushes_s": 1434.5
+     }
+    },
+    "canvasac": {
+     "runs": [
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1221.0,
+       "mspt_mean": 15.638,
+       "mspt_p50": 13.059,
+       "mspt_p95": 27.402,
+       "mspt_p99": 29.613,
+       "mspt_p999": 44.042,
+       "mspt_max": 48.486,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 19.991,
+       "tps_min": 19.959,
+       "util_mean": 0.316,
+       "cpu_cores_process": 1.24,
+       "alloc_mb_s": 121.4,
+       "heap_mean_mb": 1942.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 22.0,
+       "redstone_switches_s": 11412.7,
+       "piston_pushes_s": 1624.5
+      },
+      {
+       "players_expected": 30.0,
+       "region_players_max": 30.0,
+       "ticks": 1212.0,
+       "mspt_mean": 12.765,
+       "mspt_p50": 10.978,
+       "mspt_p95": 20.657,
+       "mspt_p99": 22.424,
+       "mspt_p999": 24.959,
+       "mspt_max": 31.502,
+       "ticks_over_50ms": 0.0,
+       "tps_mean": 20.0,
+       "tps_min": 19.997,
+       "util_mean": 0.255,
+       "cpu_cores_process": 1.07,
+       "alloc_mb_s": 122.0,
+       "heap_mean_mb": 2047.0,
+       "gc_pauses": 2.0,
+       "gc_pause_total_ms": 18.0,
+       "redstone_switches_s": 11429.7,
+       "piston_pushes_s": 1624.0
+      }
+     ],
+     "mean": {
+      "players_expected": 30.0,
+      "region_players_max": 30.0,
+      "ticks": 1216.5,
+      "mspt_mean": 14.2015,
+      "mspt_p50": 12.0185,
+      "mspt_p95": 24.0295,
+      "mspt_p99": 26.0185,
+      "mspt_p999": 34.5005,
+      "mspt_max": 39.994,
+      "ticks_over_50ms": 0.0,
+      "tps_mean": 19.9955,
+      "tps_min": 19.978,
+      "util_mean": 0.2855,
+      "cpu_cores_process": 1.155,
+      "alloc_mb_s": 121.7,
+      "heap_mean_mb": 1994.5,
+      "gc_pauses": 2.0,
+      "gc_pause_total_ms": 20.0,
+      "redstone_switches_s": 11421.2,
+      "piston_pushes_s": 1624.25
+     }
+    }
+   }
+  }
+ ],
+ "why": [
+  "We profiled CanvasMC with Java Flight Recorder during both 300-player tests. About half of its tick time with 300 standing players, and two thirds with 300 moving players, went to the locator bar: the server keeps every player's marker (waypoint) up to date for every other player. With everyone in one place, that work grows with the square of the player count.",
+  "Vex reworked how these updates and the entity tracker run, so it does the same job with much less work per tick. In the redstone test, part of the difference is the redstone engine (see the CanvasMC + Alternate Current run); Vex is still faster than CanvasMC with the same engine."
+ ],
+ "setup": [
+  [
+   "PC",
+   "AMD Ryzen 7 5700X (8 cores, 16 threads), 32 GB DDR4, Windows 11 Pro"
+  ],
+  [
+   "Java",
+   "Oracle Java 25.0.3 with the G1 garbage collector and the same flags for both servers: a 6 GB heap in the 300-player tests, an 8 GB heap with Aikar's flags in the redstone test"
+  ],
+  [
+   "Vex",
+   "Vex 26.2 update 41 (29 October 2026)"
+  ],
+  [
+   "CanvasMC",
+   "the last Minecraft 26.2 build of CanvasMC (commit 2a3bf65c, 29 September 2026), built from the official source"
+  ],
+  [
+   "World",
+   "the same pre-generated flat world for every run, view distance 10, simulation distance 10"
+  ],
+  [
+   "Settings",
+   "each server's own default config, with netty threads set to 8 on both. For the redstone test, Vex's redstone clock limiter was turned off: it slows clocks down on purpose, and both servers should run exactly the same redstone"
+  ],
+  [
+   "Runs",
+   "every test ran twice per server with the servers taking turns; the page shows the average of both runs"
+  ],
+  [
+   "Measuring",
+   "MSPT and TPS come from Folia's own per-region tick timings (what /tps shows), read by a small measuring plugin (the same jar on both servers) once all players are online and the warm-up is over"
+  ]
+ ],
+ "fine": [
+  "Measured on a desktop PC, not on a dedicated server. Your own numbers will be different; what matters on this page is the gap between the two servers on the same machine.",
+  "In the two 300-player tests the players are bots that run inside the server without a network connection, so sending packets over the network is not part of those numbers. The redstone test uses bot clients that connect over the network like a real game client.",
+  "Vex uses Alternate Current redstone by default (a faster redstone engine that Paper ships as an option); stock CanvasMC uses vanilla redstone by default. The extra \u201cCanvasMC + Alternate Current\u201d run shows CanvasMC with that same setting turned on.",
+  "Both servers ran with their default settings. Tuning can improve either one; these are the numbers you get out of the box.",
+  "Both servers ran every test with only the bench plugins installed. A real server with many plugins spends extra time in those plugins on either software."
+ ]
+}
